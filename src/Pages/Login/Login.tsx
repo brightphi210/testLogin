@@ -17,6 +17,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [show, setShow] = useState(false)
     const handleClick = () => setShow(!show)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const {
       register,
@@ -31,8 +32,13 @@ const Login = () => {
           console.log('This is the error', error);
         },
         
-        onSuccess : ()=>{
-          navigate("/user_details");
+        onSuccess : (response)=>{
+          console.log('This is response', response);
+          if(response.data.ok === false){
+            setErrorMessage(response.data.message)
+          }else{
+            navigate("/user_details");
+          }
         }
       })
     }
@@ -73,6 +79,8 @@ const Login = () => {
               onClick={handleClick}><p className="pt-5 px-5">{show === false ? loginIcon.hidden : loginIcon.visible}</p>
             </p>
           </div>
+
+          <p className='text-red-600 text-lg text-center'>{errorMessage}</p>
 
           <button type="submit" disabled={isPending} className={`w-full py-3 ${isPending && 'cursor-not-allowed'} text-white bg-black rounded-md hover:bg-neutral-700 flex items-center justify-center gap-3`}>
             {isPending ? <><span className="loading loading-spinner loading-sm"></span> Login . .</> : 'Login'}
